@@ -25,8 +25,17 @@ class UpdateScooterStatus extends Command
 
         $this->info('Starting scooter update status command...');
 
-        // Ambil semua passengers yang waktu sewanya sudah berakhir
-        $passengers = Passenger::where('end', '<', $now)->get();
+        // Ambil data terakhir berdasarkan scooter_id
+        $subQuery = Passenger::selectRaw('MAX(id) as id')
+            ->groupBy('scooter_id')
+            ->pluck('id');
+
+        // Ambil semua passengers berdasarkan subquery
+        $passengers = Passenger::whereIn('id', $subQuery)
+            ->where('end', '<', $now)
+            ->get();
+
+        $this->info($passengers);
 
         foreach ($passengers as $passenger) {
             // Ambil scooter berdasarkan id scooter dari passenger

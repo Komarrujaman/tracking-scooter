@@ -13,13 +13,13 @@
                     <form action="{{route('passenger')}}" method="post">
                         @csrf
                         <div class="form-group">
-                            <input type="text" name="name" id="nama" focus class="form-control" placeholder="Passengers Name">
+                            <input type="text" name="name" id="nama" focus class="form-control" placeholder="Passengers Name" required>
                         </div>
 
                         <div class="form-inline mb-2">
                             <div class="form-group mr-2">
                                 <div class="form-inline">
-                                    <select name="scooter_id" id="scooter_id" class="form-control">
+                                    <select name="scooter_id" id="scooter_id" class="form-control" required>
                                         <option selected disabled>Choose Scooters</option>
                                         @forelse ($listScooter as $scooter )
                                         <option value="{{$scooter->id}}">{{ $scooter->scooter }}</option>
@@ -32,7 +32,7 @@
 
                             <div class="form-group">
                                 <div class="form-inline">
-                                    <select name="duration" id="duration" class="form-control">
+                                    <select name="duration" id="duration" class="form-control" required>
                                         <option selected disabled>Duration (Hour)</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -48,12 +48,12 @@
                         <div class="form-inline mb-2">
                             <div class="form-group mr-2">
                                 <label for="start" class=" mr-1">Start</label>
-                                <input type="datetime-local" name="start" id="start" class="form-control">
+                                <input type="datetime-local" name="start" id="start" class="form-control" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label for="end" class=" mr-1">End</label>
-                                <input type="datetime-local" name="end" id="end" class="form-control">
+                                <input type="datetime-local" name="end" id="end" class="form-control" disabled>
                             </div>
                         </div>
 
