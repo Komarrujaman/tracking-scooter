@@ -48,12 +48,12 @@
                         <div class="form-inline mb-2">
                             <div class="form-group mr-2">
                                 <label for="start" class=" mr-1">Start</label>
-                                <input type="datetime-local" name="start" id="start" class="form-control" disabled>
+                                <input type="datetime-local" name="start" id="start" class="form-control" readonly>
                             </div>
 
                             <div class="form-group">
                                 <label for="end" class=" mr-1">End</label>
-                                <input type="datetime-local" name="end" id="end" class="form-control" disabled>
+                                <input type="datetime-local" name="end" id="end" class="form-control" readonly>
                             </div>
                         </div>
 

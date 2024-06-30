@@ -26,4 +26,22 @@ class ScooterController extends Controller
 
         return redirect()->back();
     }
+
+    public function edit(Request $request, $id)
+    {
+        $scooter = Scooter::find($id);
+        $request->validate([
+            'scooter' => 'required|unique:scooters|max:255',
+        ]);
+        $scooter->scooter = $request->input('scooter');
+        $scooter->save();
+        return redirect()->back();
+    }
+
+    public function destroy($id)
+    {
+        $scooter = Scooter::find($id);
+        $scooter->delete();
+        return redirect()->back();
+    }
 }

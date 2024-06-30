@@ -30,8 +30,8 @@
             <span>Scooter</span></a>
     </li>
 
-    <li class="nav-item{{ (request()->is('/')) ? ' active' : '' }}">
-        <a class="nav-link " href="{{route('home')}}">
+    <li class="nav-item{{ (request()->is('history')) ? ' active' : '' }}">
+        <a class="nav-link " href="{{route('history')}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>History</span></a>
     </li>
