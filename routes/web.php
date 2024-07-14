@@ -15,6 +15,7 @@ Route::delete('/scooter/{id}', [ScooterController::class, 'destroy'])->name('sco
 
 // Passenger
 Route::post('/passenger', [HomeController::class, 'store'])->name('passenger');
+Route::get('/stop/{id}', [HomeController::class, 'stop']);
 Route::get('/map/{passenger_id}', [HistoriesController::class, 'history']);
 
 // History

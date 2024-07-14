@@ -98,7 +98,10 @@
                                 </td>
                                 <td>{{ $item->start }}</td>
                                 <td>{{ $item->end }}</td>
-                                <td><a href="{{url('map', $item->id)}}" class="btn btn-primary"><i class="fas fa-map"></i></a></td>
+                                <td>
+                                    <a href="{{url('map', $item->id)}}" class="btn btn-primary mb-2"><i class="fas fa-map"></i></a>
+                                    <a href="{{url('stop', $item->id)}}" class="btn btn-warning"><i class="bi bi-sign-stop"></i></a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

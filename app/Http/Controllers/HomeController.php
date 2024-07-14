@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Scooter;
 use App\Models\Passenger;
 use Illuminate\Http\Request;
@@ -47,5 +48,18 @@ class HomeController extends Controller
         Passenger::create($data);
 
         return redirect()->back()->with('success', 'Passenger created successfully!');
+    }
+
+
+    public function stop($id)
+    {
+        $passenger = Passenger::find($id);
+        $now = Carbon::now();
+        $passenger->end = $now;
+        $passenger->save();
+        $scooter = Scooter::find($passenger->scooter_id);
+        $scooter->status = true;
+        $scooter->save();
+        return redirect()->back();;
     }
 }
