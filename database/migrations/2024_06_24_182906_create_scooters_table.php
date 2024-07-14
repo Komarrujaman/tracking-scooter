@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('scooters', function (Blueprint $table) {
             $table->id();
             $table->string('scooter');
+            $table->string('app')->nullable();
+            $table->string('dev_eui')->nullable();
+            $table->string('dev_name')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

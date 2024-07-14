@@ -60,7 +60,7 @@
                                             <form action="{{route('scooter-edit', $item->id)}}" method="POST">
                                                 @csrf
                                                 <div class="form-inline">
-                                                    <input type="text" name="scooter" id="" class="form-control form-control-sm" value="{{$item->scooter}}">
+                                                    <input type="text" name="scooter" id="" class="form-control form-control-sm mb-3" value="{{$item->scooter}}">
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>

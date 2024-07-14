@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class History extends Model
 {
     use HasFactory;
-    protected $fillable = ['passenger_id', 'latitude', 'longitude'];
+    protected $fillable = ['passenger_id', 'latitude', 'longitude', 'time'];
 }

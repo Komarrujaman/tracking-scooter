@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('passenger_id');
             $table->string('latitude');
             $table->string('longitude');
+            $table->string('time');
             $table->timestamps();
 
             $table->foreign('passenger_id')->references('id')->on('passengers')->onDelete('cascade');

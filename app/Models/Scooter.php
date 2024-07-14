@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Scooter extends Model
 {
     use HasFactory;
-    protected $fillable = ['scooter', 'status'];
+    protected $fillable = ['scooter', 'app', 'dev_eui', 'dev_name', 'status'];
 
     public function passengers()
     {

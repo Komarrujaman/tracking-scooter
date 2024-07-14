@@ -18,4 +18,10 @@ Route::post('/passenger', [HomeController::class, 'store'])->name('passenger');
 Route::get('/map/{passenger_id}', [HistoriesController::class, 'history']);
 
 // History
-Route::get('/history', [HistoriesController::class, 'index'])->name('history');;
+Route::get('/history', [HistoriesController::class, 'index'])->name('history');
+Route::get('/history/{id}/histories', [HistoriesController::class, 'getHistories']);
+Route::get('/latest-histories/{passenger_id}', [HistoriesController::class, 'getLatestHistories']);
+
+
+// antares
+Route::get('/antares', [HistoriesController::class, 'antares']);

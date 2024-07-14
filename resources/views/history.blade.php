@@ -28,7 +28,6 @@
                                 <th>name</th>
                                 <th>Scooter</th>
                                 <th>Duration</th>
-                                <th>Status</th>
                                 <th>Start Time</th>
                                 <th>End Time</th>
                                 <th>Tracking</th>
@@ -41,16 +40,13 @@
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->scooter }}</td>
                                 <td>{{ $item->duration }} Hour</td>
-                                <td>
-                                    @if ($item->status == 0)
-                                    <span class="badge badge-success">Used</span>
-                                    @else
-                                    <span class="badge badge-danger">Tidak Tersedia</span>
-                                    @endif
-                                </td>
                                 <td>{{ $item->start }}</td>
                                 <td>{{ $item->end }}</td>
-                                <td><a href="{{url('map', $item->id)}}" class="btn btn-primary"><i class="fas fa-map"></i></a></td>
+                                <td>
+                                    <button class="btn btn-primary open-map-modal" data-id="{{ $item->id }}">
+                                        <i class="fas fa-map"></i>
+                                    </button>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -68,27 +64,24 @@
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFydTEwMDQiLCJhIjoiY2xnNDFobjlrMGwzMDNycWVmYTR2NnJqdyJ9.e9fdx4qNxp-dBV7LMAK9uw';
 
-    // Initialize the map
+    // Initialize the map with default settings
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v11',
         center: [106.8933407, -6.3018336], // Set initial center to Jakarta
-        zoom: 14.19
+        zoom: 15
     });
 
-    // Data koordinat dari PHP
-    var histories = JSON.parse(`<?php echo json_encode($histories) ?>`);
+    var currentMarkers = [];
+    var isUserInteracting = false;
 
-    // Convert histories data to GeoJSON format and get coordinates
-    var coordinates = histories.map(function(history) {
-        return [parseFloat(history.longitude), parseFloat(history.latitude)];
+    // Track when the user is interacting with the map
+    map.on('movestart', function() {
+        isUserInteracting = true;
     });
 
-    // Add markers to the map
-    coordinates.forEach(function(coord) {
-        new mapboxgl.Marker()
-            .setLngLat(coord)
-            .addTo(map);
+    map.on('moveend', function() {
+        isUserInteracting = false;
     });
 
     // Function to get route from Mapbox Directions API
@@ -132,22 +125,78 @@
                         }
                     });
                 }
-
-                // Fit map to the route
-                var bounds = new mapboxgl.LngLatBounds();
-                route.forEach(function(coord) {
-                    bounds.extend(coord);
-                });
-                map.fitBounds(bounds, {
-                    padding: 20
-                });
             })
             .catch(error => console.error('Error fetching route:', error));
     }
 
-    // Draw route based on histories data
-    if (coordinates.length > 1) {
-        getRoute(coordinates);
+    // Function to update map with new data
+    function updateMap(histories) {
+        // Save the current center and zoom
+        var currentCenter = map.getCenter();
+        var currentZoom = map.getZoom();
+
+        // Clear existing markers and route
+        currentMarkers.forEach(marker => marker.remove());
+        currentMarkers = [];
+
+        if (map.getLayer('route')) {
+            map.removeLayer('route');
+            map.removeSource('route');
+        }
+
+        // Convert histories data to GeoJSON format and get coordinates
+        var coordinates = histories.map(function(history) {
+            return [parseFloat(history.longitude), parseFloat(history.latitude)];
+        });
+
+        // Add markers to the map
+        coordinates.forEach(function(coord) {
+            var marker = new mapboxgl.Marker()
+                .setLngLat(coord)
+                .addTo(map);
+            currentMarkers.push(marker);
+        });
+
+        // Draw route based on histories data
+        if (coordinates.length > 1) {
+            getRoute(coordinates);
+        }
+
+        // Only update center and zoom if the user is not interacting with the map
+        if (!isUserInteracting && coordinates.length > 0) {
+            map.setCenter(coordinates[coordinates.length - 1]);
+            map.setZoom(15);
+        } else {
+            map.setCenter(currentCenter);
+            map.setZoom(currentZoom);
+        }
     }
+
+    // Function to fetch latest histories
+    function fetchLatestHistories(passengerId) {
+        $.ajax({
+            url: '/latest-histories/' + passengerId,
+            method: 'GET',
+            success: function(data) {
+                if (data.length > 0) {
+                    updateMap(data);
+                    document.getElementById('map').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            },
+            error: function(error) {
+                console.error('Error fetching latest histories:', error);
+            }
+        });
+    }
+
+    // Add event listener to tracking buttons
+    document.querySelectorAll('.open-map-modal').forEach(button => {
+        button.addEventListener('click', function() {
+            var passengerId = this.getAttribute('data-id');
+            fetchLatestHistories(passengerId);
+        });
+    });
 </script>
 @endsection
