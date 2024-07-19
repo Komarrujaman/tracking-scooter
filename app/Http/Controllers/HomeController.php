@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use App\Models\Scooter;
 use App\Models\Passenger;
 use Illuminate\Http\Request;
@@ -38,7 +39,10 @@ class HomeController extends Controller
             'duration' => 'required|string',
             'start' => 'required|date_format:Y-m-d\TH:i',
             'end' => 'required|date_format:Y-m-d\TH:i',
+            'scooter' => 'required|string',
         ]);
+
+        $scooterName = $request->input('scooter');
 
         // Set status scooter to false (in use)
         $scooter = Scooter::find($data['scooter_id']);
@@ -47,8 +51,20 @@ class HomeController extends Controller
 
         Passenger::create($data);
 
+        $client = new Client();
+        $headers = [
+            'X-M2M-Origin' => '55b8f07603b3cb51:af42906767b7f8e1',
+            'Content-Type' => 'application/json;ty=4',
+            'Accept' => 'application/json'
+        ];
+        $body = '{"m2m:cin": {"con": "{\\"type\\":\\"downlink\\", \\"data\\":\\"AA0' . $data['duration'] . '\\"}"}}';
+        $url = $client->post('https://platform.antares.id:8443/~/antares-cse/antares-id/ScooterTracker/' . $scooterName, [
+            'headers' => $headers,
+            'body' => $body
+        ], $body);
         return redirect()->back()->with('success', 'Passenger created successfully!');
     }
+
 
 
     public function stop($id)

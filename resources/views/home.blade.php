@@ -22,13 +22,14 @@
                                     <select name="scooter_id" id="scooter_id" class="form-control" required>
                                         <option selected disabled>Choose Scooters</option>
                                         @forelse ($listScooter as $scooter )
-                                        <option value="{{$scooter->id}}">{{ $scooter->scooter }}</option>
+                                        <option value="{{$scooter->id}}" data-scooter-name="{{ $scooter->scooter }}">{{ $scooter->scooter }}</option>
                                         @empty
                                         <option selected disabled>No Scooter Available</option>
                                         @endforelse
                                     </select>
                                 </div>
                             </div>
+                            <input type="hidden" name="scooter" id="scooter_name">
 
                             <div class="form-group">
                                 <div class="form-inline">
@@ -118,4 +119,11 @@
 
 @section('script')
 <script src="{{asset('asset/js/script.js')}}"></script>
+<script>
+    document.getElementById('scooter_id').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex];
+        var scooterName = selectedOption.getAttribute('data-scooter-name');
+        document.getElementById('scooter_name').value = scooterName;
+    });
+</script>
 @endsection
